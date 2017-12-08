@@ -192,7 +192,9 @@ router.post("/createOrder", function(req, res, next) {
           ) {
             if (err) {
               res.json({ dinesh: "failure" });
-              return next(err);
+              return connection.rollback(function() {
+                throw err;
+              });
             }
             console.log(result);
             res.json({ dinesh: "success" });
@@ -293,7 +295,7 @@ router.get("/getOrder/Chef", function(req, res, next) {
         } else {
           console.log("entered else");
           conn.query(
-            "select * from OrderT where Chef_Id = ?",
+            "select OrderT.Order_Id,OrderT.User_Id,OrderT.Dish_Name,OrderT.Tax,OrderT.Discount,OrderT.Total_Price,OrderT.Quantity,OrderT.Chef_Id,OrderT.Order_Status,OrderT.Order_Date,User.Name AS Customer_Name from OrderT,User where OrderT.Chef_Id = ? AND OrderT.Order_Status  = 'Placed' AND OrderT.User_Id = User.User_Id",
             [req.param("chefId")],
             function(err, rows, fields) {
               if (err) {
