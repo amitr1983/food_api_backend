@@ -209,7 +209,7 @@ router.post("/createOrder", function(req, res, next) {
 }); //end of Post API
 
 // Update Order Status Api
-router.post("/updateOrder", function(req, res, next) {
+router.get("/updateOrder", function(req, res, next) {
   try {
     req.getConnection(function(err, conn) {
       if (err) {
@@ -581,7 +581,7 @@ router.get("/Chef/Menu", function(req, res, next) {
 });
 
 //API to get Recommendation on Food name
-router.get("/Menu/Recommendation", function(req, res, next) {
+router.get("/Chef/Cuisine", function(req, res, next) {
   try {
     req.getConnection(function(err, conn) {
       if (err) {
@@ -613,8 +613,9 @@ router.get("/Menu/Recommendation", function(req, res, next) {
           console.log("entered else");
           var identifier = "%" + req.param("identifier") + "%";
           //var cuisineType = req.param("cuisineType");
+          //SELECT Dish_Name,Cuisine_Type,Dish_Description,Spice_Level,Price FROM Menu where Dish_Name LIKE ? OR Dish_Description LIKE ? ORDER BY Dish_Name  LIMIT 20
           conn.query(
-            "SELECT Dish_Name,Cuisine_Type,Dish_Description,Spice_Level,Price FROM Menu where Dish_Name LIKE ? OR Dish_Description LIKE ? ORDER BY Dish_Name  LIMIT 20",
+            "SELECT * FROM User WHERE Cuisine_Type LIKE ? OR Dish_Description LIKE ? LIMIT 20",
             [identifier, identifier],
             function(err, rows, fields) {
               if (err) {
